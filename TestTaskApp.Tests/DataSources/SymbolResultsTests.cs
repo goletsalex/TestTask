@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestTaskApp.DataSources;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace TestTaskApp.DataSources.Tests
 {
@@ -44,7 +44,10 @@ namespace TestTaskApp.DataSources.Tests
 
             var actual = SymbolResults.CalculateChars(outputValue);
 
-            Assert.AreEqual(expected.Count, actual.Count);
+            Assert.IsTrue((from exp in expected
+                           join act in actual on new { exp.Symbol, exp.Count } equals new { act.Symbol, act.Count }
+                           select exp).Count() == expected.Count,
+                           "The result is different with expected");
         }
 
         [TestMethod()]
